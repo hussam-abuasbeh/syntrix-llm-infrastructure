@@ -1,0 +1,190 @@
+{
+  "workflow": "Feature-to-Schema",
+  "mode": "Mode A",
+  "title": "Feature List to Validation-Ready Schema",
+  "description": "The user provides only a list of feature names. Syntrix uses LLM-based reasoning to infer a structured schema, then applies deterministic validation rules to make the output reliable, schema-aware, and generation-ready.",
+  "input": {
+    "features": [
+      "first_name",
+      "last_name",
+      "country",
+      "city",
+      "age",
+      "marital_status",
+      "salary",
+      "email",
+      "phone"
+    ]
+  },
+  "expected_output_summary": {
+    "goal": "Generate a structured schema plan from raw feature names.",
+    "expected_capabilities": [
+      "Infer data types from feature names",
+      "Detect semantic meaning of each field",
+      "Suggest realistic distributions",
+      "Generate domain-aware categorical values",
+      "Apply validation rules",
+      "Detect relationships between fields",
+      "Prepare a generation-ready configuration"
+    ]
+  },
+  "example_schema_plan": {
+    "fields": [
+      {
+        "name": "first_name",
+        "type": "categorical_text",
+        "description": "Person first name",
+        "validation": {
+          "required": true,
+          "allow_null": false
+        }
+      },
+      {
+        "name": "last_name",
+        "type": "categorical_text",
+        "description": "Person last name",
+        "validation": {
+          "required": true,
+          "allow_null": false
+        }
+      },
+      {
+        "name": "country",
+        "type": "categorical",
+        "description": "Country of residence",
+        "validation": {
+          "required": true,
+          "allow_null": false
+        }
+      },
+      {
+        "name": "city",
+        "type": "categorical",
+        "description": "City of residence",
+        "validation": {
+          "required": true,
+          "allow_null": false,
+          "depends_on": "country"
+        }
+      },
+      {
+        "name": "age",
+        "type": "integer",
+        "description": "Person age",
+        "distribution": {
+          "type": "bounded_normal",
+          "min": 18,
+          "max": 75
+        },
+        "validation": {
+          "required": true,
+          "allow_null": false,
+          "min": 18,
+          "max": 75
+        }
+      },
+      {
+        "name": "marital_status",
+        "type": "categorical",
+        "description": "Marital status",
+        "allowed_values": [
+          "Single",
+          "Married",
+          "Divorced",
+          "Widowed",
+          "Separated"
+        ],
+        "validation": {
+          "required": true,
+          "allow_null": false
+        }
+      },
+      {
+        "name": "salary",
+        "type": "float",
+        "description": "Monthly salary",
+        "distribution": {
+          "type": "lognormal",
+          "min": 300,
+          "max": 15000
+        },
+        "validation": {
+          "required": true,
+          "allow_null": false,
+          "min": 300,
+          "max": 15000
+        }
+      },
+      {
+        "name": "email",
+        "type": "text",
+        "description": "Generated email address",
+        "validation": {
+          "required": true,
+          "allow_null": false,
+          "format": "email",
+          "unique": true
+        }
+      },
+      {
+        "name": "phone",
+        "type": "text",
+        "description": "Generated phone number",
+        "validation": {
+          "required": true,
+          "allow_null": false,
+          "format": "phone_number"
+        }
+      }
+    ],
+    "relationships": [
+      {
+        "type": "lookup_dependency",
+        "description": "City values should be consistent with the selected country.",
+        "source_field": "country",
+        "target_field": "city"
+      },
+      {
+        "type": "format_dependency",
+        "description": "Phone number format should be consistent with the selected country when country information is available.",
+        "source_field": "country",
+        "target_field": "phone"
+      },
+      {
+        "type": "derived_format",
+        "description": "Email can be generated from first_name, last_name, and a domain pool.",
+        "source_fields": [
+          "first_name",
+          "last_name"
+        ],
+        "target_field": "email"
+      }
+    ],
+    "validation_layer": {
+      "purpose": "Ensure the schema is structured, consistent, and ready for reliable data generation.",
+      "checks": [
+        "No missing required field definitions",
+        "No invalid data types",
+        "No unsupported categorical values",
+        "Numeric ranges must be valid",
+        "Dependent fields must have clear relationships",
+        "Generated output must remain schema-compliant"
+      ]
+    }
+  },
+  "engineering_value": {
+    "llm_role": [
+      "Understand feature semantics",
+      "Infer likely field types",
+      "Suggest relationships",
+      "Create an initial schema plan"
+    ],
+    "deterministic_layer_role": [
+      "Validate schema structure",
+      "Enforce constraints",
+      "Normalize field definitions",
+      "Correct invalid or unsafe outputs",
+      "Prepare generation-ready configuration"
+    ]
+  }
+}
