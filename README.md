@@ -145,11 +145,13 @@ Create a customer churn dataset for a telecom company with customer demographics
 
 ---
 
-### Manual Workflow — Controlled Configuration
+### Manual Workflow — Advanced Schema Builder
 
-In this workflow, the user manually defines fields, distributions, constraints, and generation settings.
+Manual Mode is designed for users who want full control over dataset generation.
 
-This workflow is useful when users already understand the structure they need and require predictable, controlled output behavior.
+Instead of asking Syntrix to infer the schema automatically, the user manually defines each feature, selects data types, configures distributions, adds categories and constraints, defines correlations and relations, sets row count and seed, and chooses the export format.
+
+This workflow is best suited for advanced users, QA teams, data engineers, product teams, and data scientists who need exact, repeatable, configurable synthetic datasets without writing code.
 
 ---
 
