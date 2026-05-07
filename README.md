@@ -83,7 +83,7 @@ The output is designed to be usable for testing, prototyping, dashboards, AI wor
 - **Privacy-aware design**  
   Enables experimentation and testing without depending on real sensitive data.
   
-- ** and validation scoring**  
+- **validation scoring**  
   Evaluates generated datasets using schema validity, row validity, relation consistency, domain realism, distribution checks, warnings, and violations.
 
 ---
