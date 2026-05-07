@@ -208,7 +208,7 @@ Syntrix is designed around the following engineering principles:
 
 ## Current Status
 
-Syntrix is currently a working MVP under active development.
+Syntrix is a complete working AI system with its core reasoning, validation, and structured generation pipeline implemented.
 
 The core pipeline currently focuses on:
 
