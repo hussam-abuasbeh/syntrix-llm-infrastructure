@@ -1,0 +1,24 @@
+{
+  "input": "Create a customer churn dataset for a telecom company with customer demographics, subscription plans, support tickets, monthly billing, and churn status.",
+  "workflow": "Description-to-Schema",
+  "expected_output_summary": {
+    "domain": "telecom",
+    "expected_fields": [
+      "customer_id",
+      "age",
+      "city",
+      "subscription_plan",
+      "network_type",
+      "monthly_bill",
+      "support_tickets_count",
+      "churn_status"
+    ],
+    "expected_capabilities": [
+      "domain-aware schema generation",
+      "realistic field selection",
+      "constraint generation",
+      "relationship detection",
+      "generation-ready configuration"
+    ]
+  }
+}
