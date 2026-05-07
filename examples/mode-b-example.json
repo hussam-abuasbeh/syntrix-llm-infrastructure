@@ -1,24 +1,234 @@
 {
-  "input": "Create a customer churn dataset for a telecom company with customer demographics, subscription plans, support tickets, monthly billing, and churn status.",
   "workflow": "Description-to-Schema",
+  "mode": "Mode B",
+  "title": "Natural-Language Description to Validation-Ready Schema",
+  "description": "The user provides a natural-language description of the dataset or business scenario. Syntrix uses LLM-based reasoning to understand the domain, infer relevant entities and fields, and produce a structured schema plan. Deterministic validation layers then check the output for consistency, completeness, and generation-readiness.",
+  "input": {
+    "description": "Create a customer churn dataset for a telecom company with customer demographics, subscription plans, support tickets, monthly billing, network type, contract information, and churn status."
+  },
   "expected_output_summary": {
-    "domain": "telecom",
-    "expected_fields": [
-      "customer_id",
-      "age",
-      "city",
-      "subscription_plan",
-      "network_type",
-      "monthly_bill",
-      "support_tickets_count",
-      "churn_status"
-    ],
+    "goal": "Convert a business-level dataset description into a structured, domain-aware, validation-ready schema plan.",
     "expected_capabilities": [
-      "domain-aware schema generation",
-      "realistic field selection",
-      "constraint generation",
-      "relationship detection",
-      "generation-ready configuration"
+      "Infer the target domain from natural language",
+      "Identify relevant entities and fields",
+      "Generate realistic telecom-specific schema fields",
+      "Infer appropriate data types and distributions",
+      "Suggest categorical values based on the domain",
+      "Detect relationships between fields",
+      "Apply validation and consistency rules",
+      "Prepare a generation-ready configuration"
+    ]
+  },
+  "example_schema_plan": {
+    "domain": "telecom",
+    "dataset_purpose": "Customer churn analysis and workflow testing",
+    "fields": [
+      {
+        "name": "customer_id",
+        "type": "identifier",
+        "description": "Unique customer identifier",
+        "pattern": "CUST-000001",
+        "validation": {
+          "required": true,
+          "allow_null": false,
+          "unique": true
+        }
+      },
+      {
+        "name": "age",
+        "type": "integer",
+        "description": "Customer age",
+        "distribution": {
+          "type": "bounded_normal",
+          "min": 18,
+          "max": 80
+        },
+        "validation": {
+          "required": true,
+          "allow_null": false,
+          "min": 18,
+          "max": 80
+        }
+      },
+      {
+        "name": "city",
+        "type": "categorical",
+        "description": "Customer city",
+        "validation": {
+          "required": true,
+          "allow_null": false
+        }
+      },
+      {
+        "name": "subscription_plan",
+        "type": "categorical",
+        "description": "Customer subscription plan",
+        "allowed_values": [
+          "Prepaid Basic",
+          "Prepaid Plus",
+          "Postpaid Standard",
+          "Unlimited 5G",
+          "Business Pro"
+        ],
+        "validation": {
+          "required": true,
+          "allow_null": false
+        }
+      },
+      {
+        "name": "network_type",
+        "type": "categorical",
+        "description": "Primary network technology used by the customer",
+        "allowed_values": [
+          "4G",
+          "5G",
+          "Fiber"
+        ],
+        "validation": {
+          "required": true,
+          "allow_null": false
+        }
+      },
+      {
+        "name": "contract_type",
+        "type": "categorical",
+        "description": "Customer contract type",
+        "allowed_values": [
+          "Prepaid",
+          "Monthly",
+          "Annual",
+          "Business Contract"
+        ],
+        "validation": {
+          "required": true,
+          "allow_null": false
+        }
+      },
+      {
+        "name": "monthly_bill",
+        "type": "float",
+        "description": "Monthly customer bill amount",
+        "distribution": {
+          "type": "right_skewed",
+          "min": 5,
+          "max": 300
+        },
+        "validation": {
+          "required": true,
+          "allow_null": false,
+          "min": 5,
+          "max": 300
+        }
+      },
+      {
+        "name": "support_tickets_count",
+        "type": "integer",
+        "description": "Number of support tickets submitted by the customer",
+        "distribution": {
+          "type": "count",
+          "min": 0,
+          "max": 20
+        },
+        "validation": {
+          "required": true,
+          "allow_null": false,
+          "min": 0,
+          "max": 20
+        }
+      },
+      {
+        "name": "tenure_months",
+        "type": "integer",
+        "description": "Number of months the customer has been active",
+        "distribution": {
+          "type": "bounded_integer",
+          "min": 1,
+          "max": 120
+        },
+        "validation": {
+          "required": true,
+          "allow_null": false,
+          "min": 1,
+          "max": 120
+        }
+      },
+      {
+        "name": "churn_status",
+        "type": "categorical",
+        "description": "Customer churn state",
+        "allowed_values": [
+          "Active",
+          "At Risk",
+          "Churned"
+        ],
+        "validation": {
+          "required": true,
+          "allow_null": false
+        }
+      }
+    ],
+    "relationships": [
+      {
+        "type": "conditional_weights",
+        "description": "Customers with many support tickets are more likely to be marked as At Risk or Churned.",
+        "condition": {
+          "field": "support_tickets_count",
+          "operator": ">=",
+          "value": 5
+        },
+        "target_field": "churn_status"
+      },
+      {
+        "type": "conditional_weights",
+        "description": "Business Pro plans are more likely to use Fiber or 5G network types.",
+        "condition": {
+          "field": "subscription_plan",
+          "operator": "==",
+          "value": "Business Pro"
+        },
+        "target_field": "network_type"
+      },
+      {
+        "type": "lookup_dependency",
+        "description": "Contract type should remain logically consistent with the subscription plan.",
+        "source_field": "subscription_plan",
+        "target_field": "contract_type"
+      },
+      {
+        "type": "range_dependency",
+        "description": "Monthly bill should be realistic for the selected subscription plan.",
+        "source_field": "subscription_plan",
+        "target_field": "monthly_bill"
+      }
+    ],
+    "validation_layer": {
+      "purpose": "Ensure the natural-language description is converted into a complete, consistent, and generation-ready schema.",
+      "checks": [
+        "Domain must be inferred correctly",
+        "Fields must match the requested business scenario",
+        "No irrelevant or unsupported fields should be added",
+        "Required churn-related fields must be present",
+        "Categorical values must be realistic for telecom workflows",
+        "Numeric ranges must be valid and domain-appropriate",
+        "Relationships must remain logically consistent",
+        "Generated output must remain schema-compliant"
+      ]
+    }
+  },
+  "engineering_value": {
+    "llm_role": [
+      "Understand the dataset description",
+      "Infer the telecom domain",
+      "Identify relevant fields",
+      "Suggest schema structure",
+      "Suggest possible field relationships"
+    ],
+    "deterministic_layer_role": [
+      "Validate field completeness",
+      "Enforce schema consistency",
+      "Normalize field definitions",
+      "Check domain-specific constraints",
+      "Prepare the final generation-ready configuration"
     ]
   }
 }
