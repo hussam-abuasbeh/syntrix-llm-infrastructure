@@ -1,5 +1,9 @@
 # Syntrix
 
+<p align="center">
+  <img src="assets/syntrix-logo.png" alt="Syntrix Logo" width="650"/>
+</p>
+
 **Privacy-aware AI infrastructure for reliable structured data workflows.**
 
 Syntrix is a production-oriented AI system that combines **LLM-based reasoning** with **deterministic validation layers** to generate, validate, and control structured synthetic data.
