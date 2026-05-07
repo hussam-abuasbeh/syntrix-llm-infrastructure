@@ -43,6 +43,26 @@ It is an AI infrastructure layer for:
 
 ---
 
+## What Syntrix Generates
+
+Syntrix does not only produce a schema.
+
+For each generation workflow, it can produce:
+
+- Structured schema
+- Domain-aware features
+- Semantic tags
+- Deterministic relations
+- Numeric correlations
+- Sample rows
+- Quality report
+- Validation warnings
+- Downloadable exports
+
+The output is designed to be usable for testing, prototyping, dashboards, AI workflows, QA environments, and privacy-sensitive development.
+
+---
+
 ## Key Features
 
 - **LLM-based schema reasoning**  
@@ -62,6 +82,9 @@ It is an AI infrastructure layer for:
 
 - **Privacy-aware design**  
   Enables experimentation and testing without depending on real sensitive data.
+  
+- ** and validation scoring**  
+  Evaluates generated datasets using schema validity, row validity, relation consistency, domain realism, distribution checks, warnings, and violations.
 
 ---
 
@@ -103,7 +126,7 @@ Validated Structured Output
 
 Syntrix supports multiple structured generation workflows designed to translate user intent into reliable, validation-ready outputs.
 
-### Workflow A — Feature-to-Schema
+### Workflow A — Feature Names to Validated Dataset
 
 In this workflow, the user provides a list of feature names, and Syntrix infers a structured schema using LLM-based reasoning and deterministic validation.
 
@@ -125,7 +148,7 @@ first_name, last_name, country, city, age, marital_status, salary
 
 ---
 
-### Workflow B — Description-to-Schema
+### Workflow B — Natural-Language Description to Validated Dataset
 
 In this workflow, the user provides a natural-language dataset description, and Syntrix converts it into a structured schema plan.
 
@@ -161,14 +184,37 @@ A team needs to test an AI workflow, analytics dashboard, or backend system, but
 
 With Syntrix, teams can generate realistic structured data that follows schema rules and domain constraints without exposing real personal or sensitive business data.
 
-**Example domains include:**
+## Supported Domains
 
-- Healthcare
-- Telecom
-- Banking
-- Education
-- Enterprise operations
-- HR and workforce workflows
+Syntrix currently supports production-demo quality workflows across five domains:
+
+- Telecom churn
+- Banking fraud
+- Healthcare readmission
+- Education performance
+- Technology / SaaS analytics
+
+Each domain includes structured defaults for realistic fields, categories, numeric ranges, identifier patterns, relations, and quality validation rules.
+
+---
+
+## Quality Report
+
+Syntrix includes a quality reporting layer that evaluates generated datasets before they are presented to the user.
+
+The report can include:
+
+- Passed / failed status
+- Quality score
+- Schema score
+- Row validity score
+- Relation score
+- Domain score
+- Distribution score
+- Violations
+- Warnings
+
+This makes the system more trustworthy because it does not only generate data; it also validates whether the generated data is logically consistent.
 
 ---
 
@@ -210,15 +256,22 @@ Syntrix is designed around the following engineering principles:
 
 ## Current Status
 
-Syntrix is a complete working AI system with its core reasoning, validation, and structured generation pipeline implemented.
+Syntrix has completed its core implementation for the first product version.
 
-The core pipeline currently focuses on:
+The core system includes:
 
-- Schema reasoning
-- Deterministic validation
-- Structured output generation
-- Backend API workflows
-- Domain-aware synthetic data generation
+- Mode A: feature names to validated dataset
+- Mode B: natural-language description to validated dataset
+- Manual Mode: advanced schema builder
+- Shared compiler pipeline
+- Domain registries
+- Deterministic relation enforcement
+- Quality report
+- Async jobs
+- Export workflows
+- UI preview and download flow
+
+The current focus is on public presentation, documentation, UI polish, demo materials, and portfolio readiness.
 
 Upcoming improvements include:
 
@@ -226,7 +279,24 @@ Upcoming improvements include:
 - Expanded evaluation layer
 - More domain-specific registries
 - Better monitoring and debugging tools
-- Demo video and case study
+
+---
+
+## Production-Oriented Backend Features
+
+Syntrix includes several backend features designed to make the system more production-like:
+
+- Shared compiler pipeline for Mode A and Mode B
+- Domain registry system
+- Deterministic relation enforcement
+- Quality reporting
+- Regression tests across supported domains
+- Async job system for long-running generations
+- Request limits and validation
+- Job cleanup and TTL
+- Structured observability logs
+- Cleaner public API response shape
+- Model lifecycle and GPU management endpoints
 
 ---
 
