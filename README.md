@@ -2,7 +2,7 @@
 
 
 <p align="center">
-  <img src="assets/syntrix-logo.png" alt="Syntrix Logo" width="650"/>
+  <img src="./assets/syntrix-logo.png" alt="Syntrix Logo" width="500"/>
 </p>
 
 
