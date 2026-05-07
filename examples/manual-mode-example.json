@@ -1,0 +1,270 @@
+{
+  "workflow": "Manual Schema Builder",
+  "mode": "Manual Mode",
+  "title": "Advanced Manual Schema Builder",
+  "description": "Manual Mode is the advanced schema builder in Syntrix. It is designed for users who already know the dataset structure they want and need full control over how the data should be generated. Instead of asking Syntrix to infer the schema automatically, the user manually defines every field, data type, distribution, category, constraint, correlation, relation, row count, seed, and export format.",
+  "use_case": {
+    "target_user": "Advanced users, QA engineers, data engineers, product teams, and data scientists",
+    "purpose": "Create exact, repeatable, configurable synthetic datasets without writing code.",
+    "best_for": [
+      "QA testing",
+      "controlled data experiments",
+      "dashboard testing",
+      "specific demo datasets",
+      "data engineering tests",
+      "edge-case simulation"
+    ]
+  },
+  "input_configuration": {
+    "rows": 50000,
+    "seed": 42,
+    "export_format": "csv",
+    "features": [
+      {
+        "name": "employee_id",
+        "data_type": "string",
+        "generation": {
+          "distribution": "functional",
+          "pattern": "EMP-42-000001"
+        },
+        "constraints": {
+          "nullable": false,
+          "unique": true
+        }
+      },
+      {
+        "name": "age",
+        "data_type": "integer",
+        "generation": {
+          "distribution": "uniform",
+          "min": 18,
+          "max": 65
+        },
+        "constraints": {
+          "nullable": false,
+          "min": 18,
+          "max": 65
+        }
+      },
+      {
+        "name": "department",
+        "data_type": "category",
+        "generation": {
+          "distribution": "categorical",
+          "categories": [
+            "Engineering",
+            "Sales",
+            "Marketing",
+            "Finance",
+            "Human Resources",
+            "Support"
+          ]
+        },
+        "constraints": {
+          "nullable": false
+        }
+      },
+      {
+        "name": "job_title",
+        "data_type": "category",
+        "generation": {
+          "distribution": "categorical"
+        },
+        "constraints": {
+          "nullable": false
+        }
+      },
+      {
+        "name": "salary",
+        "data_type": "float",
+        "generation": {
+          "distribution": "uniform",
+          "min": 800,
+          "max": 7000
+        },
+        "constraints": {
+          "nullable": false,
+          "min": 800,
+          "max": 7000
+        }
+      },
+      {
+        "name": "experience_years",
+        "data_type": "integer",
+        "generation": {
+          "distribution": "uniform",
+          "min": 0,
+          "max": 40
+        },
+        "constraints": {
+          "nullable": false,
+          "min": 0,
+          "max": 40
+        }
+      },
+      {
+        "name": "performance_score",
+        "data_type": "float",
+        "generation": {
+          "distribution": "normal",
+          "mean": 0.7,
+          "std": 0.15,
+          "min": 0,
+          "max": 1
+        },
+        "constraints": {
+          "nullable": false,
+          "min": 0,
+          "max": 1
+        }
+      },
+      {
+        "name": "employment_status",
+        "data_type": "category",
+        "generation": {
+          "distribution": "categorical",
+          "categories": [
+            "Active",
+            "On Leave",
+            "Terminated",
+            "Probation"
+          ]
+        },
+        "constraints": {
+          "nullable": false
+        }
+      }
+    ],
+    "correlations": [
+      {
+        "fields": [
+          "experience_years",
+          "salary"
+        ],
+        "correlation": 0.75,
+        "description": "Employees with more experience usually have higher salaries. This is a statistical relationship, not a hard rule."
+      },
+      {
+        "fields": [
+          "age",
+          "experience_years"
+        ],
+        "correlation": 0.65,
+        "description": "Older employees usually have more years of experience."
+      }
+    ],
+    "relations": [
+      {
+        "type": "lookup_dependency",
+        "source_field": "department",
+        "target_field": "job_title",
+        "description": "Job titles should be logically consistent with the selected department.",
+        "rules": {
+          "Engineering": [
+            "Software Engineer",
+            "Backend Developer",
+            "Data Engineer"
+          ],
+          "Finance": [
+            "Accountant",
+            "Financial Analyst",
+            "Auditor"
+          ],
+          "Sales": [
+            "Sales Representative",
+            "Account Executive",
+            "Sales Manager"
+          ],
+          "Human Resources": [
+            "HR Specialist",
+            "Recruiter",
+            "People Operations Specialist"
+          ]
+        }
+      },
+      {
+        "type": "hard_rule",
+        "description": "Experience years should not exceed age minus 18.",
+        "rule": "experience_years <= age - 18"
+      },
+      {
+        "type": "conditional_weights",
+        "source_field": "performance_score",
+        "target_field": "employment_status",
+        "description": "Employees with lower performance scores are more likely to be marked as Probation or Terminated.",
+        "condition": {
+          "field": "performance_score",
+          "operator": "<",
+          "value": 0.4
+        },
+        "weighted_outcome": {
+          "Active": 0.25,
+          "On Leave": 0.1,
+          "Probation": 0.4,
+          "Terminated": 0.25
+        }
+      }
+    ]
+  },
+  "expected_output_summary": {
+    "goal": "Generate a controlled synthetic dataset from a manually configured schema.",
+    "expected_capabilities": [
+      "Allow the user to define every column manually",
+      "Support string, integer, float, category, date, and boolean data types",
+      "Support uniform, normal, categorical, and functional distributions",
+      "Allow exact categories for categorical fields",
+      "Apply nullable, unique, min, and max constraints",
+      "Support numeric correlations between fields",
+      "Support logical relations between fields",
+      "Use seed for reproducible generation",
+      "Generate the requested number of rows",
+      "Export the dataset in the selected format"
+    ]
+  },
+  "validation_layer": {
+    "purpose": "Validate the user-defined schema before generation to ensure the dataset configuration is complete, consistent, and safe to execute.",
+    "checks": [
+      "All feature names must be valid",
+      "Each feature must include a supported data type",
+      "Numeric fields must include valid min and max values when required",
+      "Categorical fields must include allowed categories",
+      "Unique fields must be generation-safe",
+      "Correlation definitions must reference existing numeric fields",
+      "Relation rules must reference existing fields",
+      "Hard rules must be logically valid",
+      "Row count must be valid",
+      "Seed must be accepted for reproducibility",
+      "Export format must be supported"
+    ]
+  },
+  "engineering_value": {
+    "user_role": [
+      "Defines the dataset schema manually",
+      "Controls each field",
+      "Chooses data types and distributions",
+      "Defines categories and constraints",
+      "Configures correlations and relations",
+      "Selects row count, seed, and export format"
+    ],
+    "syntrix_role": [
+      "Validates the manual configuration",
+      "Enforces constraints",
+      "Applies correlations and relations",
+      "Generates rows according to the user-defined schema",
+      "Previews sample rows",
+      "Exports the final dataset"
+    ],
+    "llm_role": [
+      "Optional assistance for explaining schema issues",
+      "Optional suggestions for improving realism",
+      "Optional guidance when the user wants help configuring fields"
+    ],
+    "deterministic_layer_role": [
+      "Acts as the source of reliability",
+      "Executes the user-defined rules",
+      "Validates schema consistency",
+      "Controls generation behavior",
+      "Ensures output follows the configured schema"
+    ]
+  }
+}
